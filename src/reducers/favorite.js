@@ -1,7 +1,7 @@
-import { ADD_COMPANY_TO_FAV } from '../actions'
+import { ADD_COMPANY_TO_FAV, DEL_COMPANY_FROM_FAV } from '../actions'
 import { initialState } from '../store'
 
-const mainReducer = (state = initialState, action) => {
+const favoriteReducer = (state = initialState.favorite, action) => {
     switch (action.type) {
         case ADD_COMPANY_TO_FAV: {
             // this.state.cart.products.push() <-- THIS IS SUPER WRONG
@@ -12,12 +12,16 @@ const mainReducer = (state = initialState, action) => {
                 // we also have to make super sure that we're not mutating our arguments,
                 // because we're in a pure function
                 ...state,
-                favorite: {
-                    ...state.favorite,
-                    // products: [...state.cart.products, action.payload],
-                    companies: state.favorite.companies.concat(action.payload),
-                    // both of these strategies do the same result! choose you favourite :)
-                },
+                // products: [...state.cart.products, action.payload],
+                companies: state.companies.concat(action.payload),
+                // both of these strategies do the same result! choose you favourite :)
+
+            }
+        }
+        case DEL_COMPANY_FROM_FAV: {
+            return {
+                ...state,
+                companies: state.companies.filter((company, i) => i !== action.payload),
             }
         }
         default:
@@ -25,4 +29,4 @@ const mainReducer = (state = initialState, action) => {
     }
 }
 
-export default mainReducer
+export default favoriteReducer

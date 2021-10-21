@@ -1,29 +1,27 @@
 import { Col, Container, Form, Row } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import SingleJob from "./SingleJob";
+import { connect } from "react-redux";
+import { getJobsAction } from "../actions";
 
-const Search = () => {
-  const [searchQuery, setSearchQuery] = useState(null);
+const mapStateToProps = (state) => ({
+  jobs: state.job.jobList,
+  isError: state.job.isError,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  getJobs: (searchQuery) => {
+    dispatch(getJobsAction(searchQuery));
+  },
+});
+
+const Search = ({ getJobs, jobs }) => {
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchResult, setSearchResult] = useState([]);
 
-  const search = async () => {
-    try {
-      const response = await fetch(
-        "https://strive-jobs-api.herokuapp.com/jobs?search=" + searchQuery
-      );
-      if (response.ok) {
-        let result = await response.json();
-        setSearchResult(result.data);
-      } else {
-        console.log("Error");
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   useEffect(() => {
-    searchQuery !== null && search();
+    searchQuery !== "" && getJobs(searchQuery);
+    console.log(jobs);
   }, [searchQuery]);
 
   return (
@@ -38,8 +36,8 @@ const Search = () => {
         />
       </Form.Group>
       <Row>
-        {searchResult.length !== 0 &&
-          searchResult.map((result) => (
+        {jobs.length !== 0 &&
+          jobs.map((result) => (
             <Col xs={3} key={result._id}>
               <SingleJob job={result} />
             </Col>
@@ -49,4 +47,4 @@ const Search = () => {
   );
 };
 
-export default Search;
+export default connect(mapStateToProps, mapDispatchToProps)(Search);

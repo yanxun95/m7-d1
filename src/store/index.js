@@ -2,8 +2,12 @@
 // 1) the initial state of the application
 // 2) the configureStore function execution
 
-import { createStore } from 'redux'
-import mainReducer from '../reducers'
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
+import favoriteReducer from '../reducers/favorite'
+import jobReducer from '../reducers/job'
+import thunk from 'redux-thunk'
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 // 1)
 export const initialState = {
@@ -12,13 +16,18 @@ export const initialState = {
     favorite: {
         companies: [],
     },
+    job: {
+        jobList: [],
+        isError: false,
+    },
 }
 
+const bigReducer = combineReducers({
+    favorite: favoriteReducer,
+    job: jobReducer,
+})
+
 // 2)
-const configureStore = createStore(
-    mainReducer,
-    initialState,
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-)
+const configureStore = createStore(bigReducer, initialState, composeEnhancers(applyMiddleware(thunk)))
 
 export default configureStore

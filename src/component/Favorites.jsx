@@ -1,18 +1,34 @@
 import React from "react";
-import { ListGroup } from "react-bootstrap";
+import { Button, ListGroup } from "react-bootstrap";
 import { connect } from "react-redux";
+import { removeCompanyFromFavorite } from "../actions";
 
 const mapStateToProps = (state) => ({
   favorites: state.favorite.companies,
 });
 
-function Favorites({ favorites }) {
+// mapDispatchToProps is a function returning an object
+const mapDispatchToProps = (dispatch) => ({
+  // we need a way of adding the selectedBook to the cart products array
+  delFromFav: (index) => {
+    dispatch(removeCompanyFromFavorite(index));
+  },
+});
+
+function Favorites({ favorites, delFromFav }) {
   return (
     <div>
       <ListGroup>
-        {favorites.map((company) => (
+        {favorites.map((company, i) => (
           <ListGroup.Item style={{ color: "black" }}>
             {company.title}
+            <Button
+              variant="primary"
+              style={{ marginLeft: "1rem" }}
+              onClick={() => delFromFav(i)}
+            >
+              Delete
+            </Button>
           </ListGroup.Item>
         ))}
       </ListGroup>
@@ -20,4 +36,4 @@ function Favorites({ favorites }) {
   );
 }
 
-export default connect(mapStateToProps)(Favorites);
+export default connect(mapStateToProps, mapDispatchToProps)(Favorites);
