@@ -1,26 +1,31 @@
 import { Col, Container, Form, Row } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import SingleJob from "./SingleJob";
-import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { getJobsAction } from "../actions";
 
-const mapStateToProps = (state) => ({
-  jobs: state.job.jobList,
-  isError: state.job.isError,
-});
+// const mapStateToProps = (state) => ({
+//   jobs: state.job.jobList,
+//   isError: state.job.isError,
+// });
 
-const mapDispatchToProps = (dispatch) => ({
-  getJobs: (searchQuery) => {
-    dispatch(getJobsAction(searchQuery));
-  },
-});
+// const mapDispatchToProps = (dispatch) => ({
+//   getJobs: (searchQuery) => {
+//     dispatch(getJobsAction(searchQuery));
+//   },
+// });
 
-const Search = ({ getJobs, jobs }) => {
+const Search = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResult, setSearchResult] = useState([]);
 
+  const jobs = useSelector((state) => state.job.jobList);
+  const isError = useSelector((state) => state.job.isError);
+
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    searchQuery !== "" && getJobs(searchQuery);
+    searchQuery !== "" && dispatch(getJobsAction(searchQuery));
     console.log(jobs);
   }, [searchQuery]);
 
@@ -47,4 +52,4 @@ const Search = ({ getJobs, jobs }) => {
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Search);
+export default Search;

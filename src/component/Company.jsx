@@ -2,22 +2,14 @@ import React from "react";
 import { Button, Card } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
 import { addCompanyToFavAction } from "../actions";
-
-const mapStateToProps = (state) => ({});
-
-// mapDispatchToProps is a function returning an object
-const mapDispatchToProps = (dispatch) => ({
-  // we need a way of adding the selectedBook to the cart products array
-  addToFav: (company) => {
-    dispatch(addCompanyToFavAction(company));
-  },
-});
 
 const Company = ({ addToFav }) => {
   const [companies, setCompanies] = useState([]);
   const { name } = useParams();
+
+  const dispatch = useDispatch();
 
   const search = async () => {
     try {
@@ -57,7 +49,10 @@ const Company = ({ addToFav }) => {
                 marginRight: "1rem",
               }}
             >
-              <Button variant="primary" onClick={() => addToFav(company)}>
+              <Button
+                variant="primary"
+                onClick={() => dispatch(addCompanyToFavAction(company))}
+              >
                 Add to favorite
               </Button>
             </div>
@@ -80,4 +75,4 @@ const Company = ({ addToFav }) => {
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Company);
+export default Company;
